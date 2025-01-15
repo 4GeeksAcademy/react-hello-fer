@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Swal from 'sweetalert2'
 //include images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";
 
@@ -11,14 +11,20 @@ const Home = () => {
 		<div className="container">
 			<h1>Todos</h1>
 			<ul>
-				<li>
+				<li className="linea1">
 					<input type="text"
 						onChange={(e) => setInputValue(e.target.value)}
 						value={inputValue}
-						onKeyPress={(e) => {
+						onKeyDown={(e) => {
 							if (e.key === "Enter") {
+								e.preventDefault()
 								if (inputValue.trim() === "") {
-									alert("Please enter a item!");
+									Swal.fire({
+										title:"hola señor/señora",
+										imageUrl: "https://media.tenor.com/p34oU47DQ-8AAAAM/monkey-conduciendo.gif",
+										imageHeight: 200,
+										text: "Por favor inserte tarea"
+									  });
 									return;
 								}
 								setTodos(todos.concat(inputValue));
@@ -28,10 +34,10 @@ const Home = () => {
 						placeholder="what do you need to do"></input>
 				</li>
 				{todos.map((item, index) => (
-					<li>
+					<li className="linea2">
 						{item}{""}
 						<i
-							class="fa-solid fa-trash"
+							className="fa-solid fa-trash icon"
 							onClick={() =>
 								setTodos(
 									todos.filter(

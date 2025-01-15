@@ -11,26 +11,90 @@
 
 */
 body{
-    margin-top: 100px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #f5f5f5;
-  color: #4d4d4d;
+  margin-top: 100px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #f0f4f5; 
+  color: #2e3b3d; 
 }
+
 ul{
-    padding: 0;
-    margin-bottom: 0;
+  padding: 0;
+  margin-bottom: 0;
 }
+
 ul li{
-    background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    
-list-style: none;
-padding: 5px;
+  background: #338c8d; 
+  box-shadow: 0 2px 4px rgba(243, 243, 243, 0.2);
+  list-style: none;
+  padding: 5px;
+}
+
+.container {
+background-color: #1b4d43; 
+color: #e8f0f3; 
+font-family: 'Arial', sans-serif;
+padding: 30px 20px;
+border-radius: 12px;
+max-width: 600px;
+margin: 50px auto;
+box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+background-image: url('https://media.tenor.com/XsC7ay82lKkAAAAM/monkey.gif'); 
+background-size: cover;
 }
 
 h1{
-    text-align: center;
+  text-align: center;
+  color: #e8f0f3; 
 }
-input{
-    border: none; width: 100%;
+
+input {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #78909c; 
+  color: #ffffff; 
+  border: 1px solid #6b8e8b; 
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #b0bec5; 
+  background-color: #cfd8dc; 
+  outline: none;
+}
+
+.linea2:hover {
+  background-color: #f5f5f5; 
+}
+
+.icon {
+  font-size: 18px;
+  color: #1b4d43; 
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  justify-content: space-between;
+  margin-right: 10px; 
+}
+
+.linea2:hover .icon {
+  opacity: 1;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+}
+
+.linea2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid #ccc;
+}
+
+.icon:hover {
+  color: #338c8d; 
 }
