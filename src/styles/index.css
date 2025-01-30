@@ -88,7 +88,7 @@ input:focus {
 .linea2:hover > .icon {
   opacity: 1; 
   color: #e53935; 
-  content: "\2764"; 
+   
 }
 
 .todo-item {

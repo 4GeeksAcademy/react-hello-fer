@@ -1,89 +1,115 @@
-import React, { useState, useEffect } from "react";
-import Swal from "sweetalert2";
+import React, { useState, useEffect } from 'react';
 
 const Home = () => {
-	const [inputValue, setInputValue] = useState("");
 	const [todos, setTodos] = useState([]);
-	const API_URL = "https://playground.4geeks.com/users/fernando/todos";
+	const [inputValue, setInputValue] = useState('');
+
 
 	useEffect(() => {
-		const createUser = async () => {
-			try {
-				const response = await fetch("https://playground.4geeks.com/users/fernando", {
-					method: "POST",
-				});
-				if (!response.ok) {
-					console.error("Error al crear usuario");
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		const getTodos = async () => {
-			try {
-				const response = await fetch(API_URL);
-				if (response.ok) {
-					const data = await response.json();
-					setTodos(data);
-				} else {
-					console.error("Error al obtener las tareas");
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		createUser().then(getTodos);
+		createUser();
+		fetchTodos();
 	}, []);
 
-	const updateTodosOnServer = async (newTodos) => {
+
+	const fetchTodos = async () => {
 		try {
-			const response = await fetch(API_URL, {
-				method: "PUT",
+			const response = await fetch('https://playground.4geeks.com/todo/users/fernando');
+			if (!response.ok) throw new Error("Error al obtener las tareas");
+			const data = await response.json();
+			console.log(data)
+			setTodos(data.todos);
+		} catch (error) {
+			console.error("Error al obtener las tareas:", error);
+		}
+	};
+	const createUser = async () => {
+		try {
+			const response = await fetch("https://playground.4geeks.com/todo/todos/fernando", {
+				method: "POST",
+				body: JSON.stringify([]),
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(newTodos),
 			});
-			if (!response.ok) {
-				console.error("Error al actualizar las tareas");
+
+			if (!response.ok) throw new Error("Error al crear usuario");
+
+			const data = await response.json();
+
+			
+			if (data.id === 0) {
+				console.error("Error: El usuario no se creó correctamente.");
+				return;
 			}
+
+			console.log("Usuario creado correctamente", data);
+			setTodos([]);
 		} catch (error) {
-			console.error(error);
+			console.error("Error al crear usuario:", error);
 		}
 	};
 
-	const addTask = () => {
-		if (inputValue.trim() === "") {
-			Swal.fire({
-				title: "Por favor inserte una tarea",
-				imageUrl: "https://media.tenor.com/p34oU47DQ-8AAAAM/monkey-conduciendo.gif",
-				imageHeight: 200,
+
+	
+	const addTask = async () => {
+		if (inputValue.trim() === '') return;
+		const newTodo = { label: inputValue, done: false };
+		try {
+			const response = await fetch('https://playground.4geeks.com/todo/todos/fernando', {
+				method: "POST",
+				body: JSON.stringify(newTodo),
+				headers: {
+					"Content-Type": "application/json"
+				}
 			});
-			return;
+			if (!response.ok) throw new Error("Error al agregar la tarea");
+			const data = await response.json();
+			setTodos([...todos, data]);
+			setInputValue(''); 
+		} catch (error) {
+			console.error("Error al agregar la tarea:", error);
 		}
-		const newTodos = [...todos, { label: inputValue, done: false }];
-		setTodos(newTodos);
-		setInputValue("");
-		updateTodosOnServer(newTodos);
 	};
 
-	const deleteTask = (index) => {
-		const newTodos = todos.filter((_, i) => i !== index);
-		setTodos(newTodos);
-		updateTodosOnServer(newTodos);
+
+	const deleteTask = async (todoId) => {
+		try {
+			const response = await fetch(`https://playground.4geeks.com/todo/todos/${todoId}`, {
+				method: "DELETE"
+			});
+			if (!response.ok) throw new Error("Error al eliminar la tarea");
+
+			// Eliminar la tarea del estado
+			setTodos(todos.filter((todo) => todo.id !== todoId));
+		} catch (error) {
+			console.error("Error al eliminar la tarea:", error);
+		}
 	};
 
-	const clearTasks = () => {
-		setTodos([]);
-		updateTodosOnServer([]);
+
+	const clearTasks = async () => {
+		try {
+			const response = await fetch('https://playground.4geeks.com/todo/todos/fernando', {
+				method: "PUT",
+				body: JSON.stringify([]),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+			if (!response.ok) throw new Error("Error al limpiar las tareas");
+
+
+			setTodos([]);
+		} catch (error) {
+			console.error("Error al limpiar las tareas:", error);
+		}
 	};
 
 	return (
 		<div className="container">
 			<h1>Todos</h1>
 			<ul>
+				{/* Input para agregar tareas */}
 				<li className="linea1">
 					<input
 						type="text"
@@ -92,23 +118,29 @@ const Home = () => {
 						onKeyDown={(e) => {
 							if (e.key === "Enter") {
 								e.preventDefault();
-								addTask();
+								addTask(); 
 							}
 						}}
 						placeholder="What do you need to do?"
-					></input>
+					/>
 				</li>
-				{todos.map((item, index) => (
-					<li className="linea2" key={index}>
+
+				{/* Listar las tareas */}
+				{todos?.map((item) => (
+					<li className="linea2" key={item.id}>
 						{item.label}
 						<i
 							className="fa-solid fa-x icon"
-							onClick={() => deleteTask(index)}
+							onClick={() => deleteTask(item.id)}
 						></i>
 					</li>
 				))}
 			</ul>
+
+
 			<div>{todos.length} item(s) left</div>
+
+
 			<button onClick={clearTasks}>Clear All</button>
 		</div>
 	);
